@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
+
+# update log
 #
-declare -r GoflywayToolVer="0.0.01"
+# version: 0.0.02
+# date: 2018-06-04
+#    1. add function start_goflyway_pass_site
+#
+
+declare -r GoflywayToolVer="0.0.02"
 declare -r CurDir=$(cd "$(dirname "$0")"; pwd)
 declare -r DownlodDir="/tmp/goflyway"
-declare -r FinalDir="/usr/local/src/goflyway"
+declare -r FinalDir="/usr/local/goflyway"
 declare -r ConfFile="/etc/goflyway/goflyway.ini"
 declare -r LogDir="/var/log/goflyway"
 
@@ -115,6 +122,7 @@ function add_port(){
 function remove_port(){
     port=$1
 
+    [[ -z ${port} ]] && return
     if [[ $(firewall-cmd --list-port | grep "${port}/tcp" | wc -l) -gt 0 ]] ; then
 
         echo "关闭端口 ${port}"
@@ -237,7 +245,7 @@ function update_goflyway(){
 
     goflywayVer=$(ini_get_option_value ${ConfFile} "ServerConfig" "Version")
 
-    if [[ ${goflywayLatestVer} -eq ${goflywayVer} ]] ; then
+    if [[ "${goflywayLatestVer}" == "${goflywayVer}" ]] ; then
         echo "已经是最新版本，无需更新"
     else
         delete_goflyway
@@ -327,6 +335,33 @@ function start_goflyway(){
 
     get_config
 }
+
+function start_goflyway_pass_site(){
+    [[ ! -z $(get_pid) ]] && echo -e "${Error} goflyway 正在运行 !" && exit 1
+
+    [[ -e ${LogDir} ]] || {
+        mkdir -p ${LogDir}
+    }
+    logFile="${LogDir}/goflyway_"$(date +%Y-%m-%d_%H-%M-%S)".log"
+    ln -sf ${logFile} ${LogDir}/goflyway.log
+
+    [[ $(which goflyway | wc -l) -eq 1 ]] || {
+        echo "goflyway 不能启动"
+        echo "检查 goflyway 安装路径"
+        exit 1
+    }
+
+    goflywayPort=$(ini_get_option_value ${ConfFile} "ServerConfig" "Port")
+    goflywayPwd=$(ini_get_option_value ${ConfFile} "ServerConfig" "Passwd")
+    nohup goflyway -k="${goflywayPwd}" -l=":${goflywayPort}" -proxy-pass="http://kernel.ubuntu.com/~kernel-ppa/mainline/" > ${logFile} 2>&1 &
+
+    echo "任务已经启动"
+
+    goflywayPort=$(ini_get_option_value ${ConfFile} "ServerConfig" "Port")
+    add_port ${goflywayPort}
+
+    get_config
+}
 function stop_goflyway(){
     goflywayPort=$(ini_get_option_value ${ConfFile} "ServerConfig" "Port")
     remove_port ${goflywayPort}
@@ -372,6 +407,7 @@ function list_available_task(){
     task_array["更新密码"]=update_password
     task_array["删除_goflyway"]=delete_goflyway
     task_array["启动_goflyway"]=start_goflyway
+    task_array["启动_goflyway_pass_site"]=start_goflyway_pass_site
     task_array["查询_Config"]=get_config
     task_array["查询_Log"]=check_log
     task_array["停止_goflyway"]=stop_goflyway
@@ -381,7 +417,7 @@ function list_available_task(){
 
 #     task_list=(${!task_array[@]})
     task_list=("安装_goflyway" "更新_goflyway" "删除_goflyway" \
-               "启动_goflyway" "停止_goflyway" \
+               "启动_goflyway" "启动_goflyway_pass_site" "停止_goflyway" \
                "更新端口" "更新密码" \
                "查询_Config" "查询_Log" \
                "退出_Shell")
