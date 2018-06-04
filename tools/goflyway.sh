@@ -115,7 +115,6 @@ function add_port(){
 function remove_port(){
     port=$1
 
-    [[ -z ${port} ]] && return
     if [[ $(firewall-cmd --list-port | grep "${port}/tcp" | wc -l) -gt 0 ]] ; then
 
         echo "关闭端口 ${port}"
@@ -238,7 +237,7 @@ function update_goflyway(){
 
     goflywayVer=$(ini_get_option_value ${ConfFile} "ServerConfig" "Version")
 
-    if [[ "${goflywayLatestVer}" == "${goflywayVer}" ]] ; then
+    if [[ ${goflywayLatestVer} -eq ${goflywayVer} ]] ; then
         echo "已经是最新版本，无需更新"
     else
         delete_goflyway
