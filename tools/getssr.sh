@@ -5,5 +5,11 @@ encodedUrls=($(curl https://doub.io/sszhfx/ | grep 'https://doub.pw/qr/qr.php?te
 
 for encodedUrl in $(echo ${encodedUrls[@]})
 do
-    curl ${encodedUrl} | grep 'qrcode("ssr://' >> ${rstfile}
+    curl ${encodedUrl} | grep 'qrcode("ssr://' | cut -d'"' -f2 >> ${rstfile}
 done
+
+[[ $(git diff ${rstfile}| wc -l) -gt 0 ]] && {
+    git add ${rstfile}
+    git commit -m "update ssr - $(date)"
+    git push 
+}
