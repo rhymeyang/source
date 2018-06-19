@@ -1,6 +1,8 @@
 self=${0}
 cd $(dirname ${self})
 
+git pull origin gh-pages
+
 rstfile='rst.md'
 
 rm -f ${rstfile}
