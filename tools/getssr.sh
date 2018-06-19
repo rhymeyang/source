@@ -1,3 +1,6 @@
+self=${0}
+cd $(dirname ${self})
+
 rstfile='rst.md'
 
 rm -f ${rstfile}
