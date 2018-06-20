@@ -12,8 +12,12 @@ encodedUrls=($(curl https://doub.io/sszhfx/ | grep 'https://doub.pw/qr/qr.php?te
 
 for encodedUrl in $(echo ${encodedUrls[@]})
 do
-    curl ${encodedUrl} | grep 'qrcode("ssr://' | cut -d'"' -f2 >> ${rstfile}
-    curl ${encodedUrl} | grep 'qrcode("ss://' | cut -d'"' -f2 >> ${rstfile}
+    [[ $(echo ${encodedUrl}| grep 'text=ssr:' | wc -l) -gt 0 ]] && {
+        curl ${encodedUrl} | grep 'qrcode("ssr://' | cut -d'"' -f2 >> ${rstfile}
+    }
+    [[ $(echo ${encodedUrl}| grep 'text=ss:' | wc -l) -gt 0 ]] && {
+        curl ${encodedUrl} | grep 'qrcode("ss://' | cut -d'"' -f2 >> ${rstfile}
+    }
 done
 
 [[ $(git diff ${rstfile}| wc -l) -gt 0 ]] && {
