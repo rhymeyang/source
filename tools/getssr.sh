@@ -4,6 +4,7 @@ cd $(dirname ${self})
 git pull origin gh-pages
 
 rstfile='rst.md'
+groupfile='groupSsr.md'
 
 rm -f ${rstfile}
 #encodedUrls=($(curl https://doub.io/sszhfx/ | grep 'https://doub.pw/qr/qr.php?text=ss' | cut -d' ' -f3| sed  -e 's/href="//g'| cut -d'"' -f 1))
@@ -20,8 +21,11 @@ do
     }
 done
 
-[[ $(git diff ${rstfile}| wc -l) -gt 0 ]] && {
-    git add ${rstfile}
-    git commit -m "update ssr - $(date)"
-    git push 
-}
+[[ $(git diff ${rstfile}| wc -l) -eq 0 ]] && exit
+
+python groupSsr.py
+
+git add ${rstfile} ${groupfile}
+git commit -m "update ssr - $(date)"
+git push 
+
