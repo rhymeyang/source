@@ -36,7 +36,7 @@ def decode_ss(ssString, groupname='ABC'):
         pass
     return decode_ss
         
-with open('./ssr.md', 'r') as fd:
+with open('./rst.md', 'r') as fd:
     lines = fd.readlines()
     
 
