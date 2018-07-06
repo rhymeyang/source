@@ -24,9 +24,10 @@ do
 done
 
 [[ $(git diff ${rstfile}| wc -l) -gt 0 ]] && {
-    python groupSsr.py
+#    python groupSsr.py
 
-    git add ${rstfile} ${groupfile}
+#    git add ${rstfile} ${groupfile}
+    git add ${rstfile}
     git commit -m "update ssr - $(date)"
     git push 
 }
