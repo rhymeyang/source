@@ -1,0 +1,17 @@
+{
+    "server": "64.137.246.61",
+    "server_ipv6": "::",
+    "server_port": 5076,
+    "local_address": "192.168.2.22",
+    "local_port": 2080,
+    "password": "doub.io/sszhfx/*5076",
+    "timeout": 300,
+    "udp_timeout": 60,
+    "method": "chacha20",
+    "protocol": "auth_sha1_v4",
+    "protocol_param": "",
+    "obfs": "tls1.2_ticket_auth",
+    "obfs_param": "",
+    "fast_open": false,
+    "workers": 1
+}
