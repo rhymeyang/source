@@ -1,0 +1,17 @@
+{
+    "server": "45.62.249.213",
+    "server_ipv6": "::",
+    "server_port": 5076,
+    "local_address": "192.168.2.22",
+    "local_port": 2080,
+    "password": "doub.io/sszhfx/*5076",
+    "timeout": 300,
+    "udp_timeout": 60,
+    "method": "chacha20",
+    "protocol": "origin",
+    "protocol_param": "",
+    "obfs": "plain",
+    "obfs_param": "",
+    "fast_open": false,
+    "workers": 1
+}
