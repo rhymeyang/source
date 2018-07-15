@@ -1,10 +1,12 @@
 self=${0}
 cd $(dirname ${self})
 
-git pull origin gh-pages
 
 rstfile='rst.md'
 groupfile='groupSsr.md'
+
+git reset --hard
+git pull origin gh-pages
 
 rm -f ${rstfile}
 rm -f ${groupfile}
