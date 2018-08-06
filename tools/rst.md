@@ -1,4 +1,4 @@
-ams1.brookfree.pw:7000:-
+fra1.brookfree.pw:7000:-
 lon1.brookfree.pw:7000:-
 demo.goflyway.pw:80:CDN模式
 64.137.246.61:3953:chacha20
