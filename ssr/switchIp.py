@@ -4,13 +4,14 @@ import json
 import sys
 from os import path
 
-remote_port = 3431
+default_remote_port = 11
 local_ip = "192.168.2.22"
 local_port = 2080
 
 ip_list = ["64.137.246.61",
            "64.137.251.141",
            "64.137.250.136",
+           "64.137.228.35",
            "64.137.228.35"]
 
 use_ssr = False
@@ -18,7 +19,32 @@ use_ssr = False
 work_dir = path.dirname(path.abspath(sys.argv[0]))
 config_file = path.join(work_dir, "shadowsocks.json")
 
-def get_setting(new_ip):
+print(config_file)
+
+
+def update_info(work_dir=work_dir):
+    decode_file = path.join(work_dir, "decode.md")
+    with open(decode_file,"r",encoding="utf-8") as fh:
+        lines = fh.readlines()
+    
+    lines = [line.strip() for line in lines if line]
+    lines = [line for line in lines if line]
+
+    lines = lines[lines.index("ss:") + 1:]
+    lines = [line.split('@')[1].split(':') for line in lines]
+
+    ips = [ip for (ip, port) in lines]
+    ports = [port for (ip, port) in lines]
+    if(len(lines) > 0):
+        ip_list.clear()
+        ip_list.extend(ips)
+        
+        # nonlocal remote_port
+        return ports[-1]
+    return default_remote_port
+
+    
+def get_setting(new_ip, remote_port):
     ssr_config = {
         "server": new_ip,
         "server_ipv6": "::",
@@ -54,13 +80,15 @@ def get_new_ip():
     return ip_list[server_index]
 
 
-new_ip = get_new_ip()
+def main():
+    remote_port = update_info()
+    new_ip = get_new_ip()
+    out_config = get_setting(new_ip, remote_port)
+
+    with open(config_file, 'w') as fd:
+        json.dump(out_config, fd, indent=4)
+    
+    print(json.dumps(out_config, indent=4))
 
 
-out_config = get_setting(new_ip)
-
-
-with open(config_file, 'w') as fd:
-    json.dump(out_config, fd, indent=4)
-
-
+main()
