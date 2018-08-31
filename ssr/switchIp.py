@@ -27,9 +27,8 @@ def update_info(work_dir=work_dir):
     with open(decode_file,"r",encoding="utf-8") as fh:
         lines = fh.readlines()
     
-    lines = [line.strip() for line in lines if line]
-    lines = [line for line in lines if line]
-
+    lines = [line.strip() for line in lines if line.strip()]
+    
     lines = lines[lines.index("ss:") + 1:]
     lines = [line.split('@')[1].split(':') for line in lines]
 
