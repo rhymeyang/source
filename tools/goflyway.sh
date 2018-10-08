@@ -223,7 +223,7 @@ function install_goflyway(){
     }
     [[ ! -z ${bit} ]] && {
         wget -N --no-check-certificate "https://github.com/coyove/goflyway/releases/download/${goflywayLatestVer}/goflyway_linux_${bit}.tar.gz"
-        goflyway_linux_amd64.tar.gz
+        #goflyway_linux_amd64.tar.gz
     }
 
     [[ -e "${CurDir}/goflyway_linux_amd64.tar.gz" ]] || {
