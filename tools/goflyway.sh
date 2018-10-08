@@ -2,12 +2,16 @@
 
 # update log
 #
+# version: 0.0.03
+# date: 2018-10-09
+#    1. update for kcp using version 1.3.0a 
+#
 # version: 0.0.02
 # date: 2018-06-04
 #    1. add function start_goflyway_pass_site
 #
 
-declare -r GoflywayToolVer="0.0.02"
+declare -r GoflywayToolVer="0.0.03"
 declare -r CurDir=$(cd "$(dirname "$0")"; pwd)
 declare -r DownlodDir="/tmp/goflyway"
 declare -r FinalDir="/usr/local/goflyway"
@@ -326,7 +330,7 @@ function start_goflyway(){
 
     goflywayPort=$(ini_get_option_value ${ConfFile} "ServerConfig" "Port")
     goflywayPwd=$(ini_get_option_value ${ConfFile} "ServerConfig" "Passwd")
-    nohup goflyway -k="${goflywayPwd}" -l=":${goflywayPort}" > ${logFile} 2>&1 &
+    nohup goflyway -k="${goflywayPwd}" -l=":${goflywayPort}" -U="kcp" > ${logFile} 2>&1 &
 
     echo "任务已经启动"
 
