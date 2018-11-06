@@ -1,25 +1,55 @@
 #! /bin/bash
 
 ssrDir=/home/vicky/code/shadowsocksr/shadowsocks
-logFile=/var/log/ssr/ssr_$(date +%F_%H-%M-%S).log
+actLogFile=/var/log/ssr/ssr_$(date +%F_%H-%M-%S).log
+logFile=/var/log/shadowsocksr.log
 conFile=/opt/tools/ssr/shadowsocks.json
-
-/opt/tools/ssr/switchIp.py
-
-cd ${ssrDir}
+arcConfig=/opt/tools/ssr/shadowsocksXiong.json
 
 case $1 in
-    start | restart )        
-        touch ${logFile}
-        sudo ln -sf ${logFile} /var/log/shadowsocksr.log
-        sudo python local.py -c ${conFile}  -d $1
+    start | restart )
+        cd ${ssrScript}
+        pwd
         
-        sudo systemctl restart privoxy
+        case $2 in
+            X )
+                ./switchXMIp.py
+                ;;
+            W )
+                ./switchWall.py
+                ;;
+            * )
+                ./switchIp.py
+                ;;
+        esac
+        
+        touch ${actLogFile}
+        sudo ln -sf ${actLogFile} ${logFile}
+        cat ${conFile} |grep -Eo '"server":[ ."0-9]+' |sudo tee -a ${logFile}
+
+        cd ${ssrDir}
+
+        sudo python local.py -c ${conFile}  -d $1
+#        sudo systemctl restart privoxy
         ;;
+   
     stop )
+        cd ${ssrDir}
+
         sudo python local.py -c ${conFile} -d stop
         ;;
     * | help )
-        echo "Usage: $0 {start | restart | stop }"
+        cat >&1 <<- 'EOF'
+    Location: $0
+
+    Usage: { start | restart 
+             start X | restart X 
+             start W | restart W
+             stop }
+        start will swith ip with doub
+        start X swith ip from Xiongmao
+        start W swith ip from WallLink
+EOF
         ;;
 esac
+
